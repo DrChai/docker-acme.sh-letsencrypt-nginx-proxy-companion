@@ -36,6 +36,33 @@ function add_location_configuration {
     return 1
 }
 
+function add_standalone_configuration {
+    local domain="${1:?}"
+    cat > "/etc/nginx/conf.d/standalone-cert-$domain.conf" << EOF
+server {
+    server_name $domain;
+    listen 80;
+    access_log /var/log/nginx/access.log vhost;
+    location ^~ /.well-known/acme-challenge/ {
+        auth_basic off;
+        allow all;
+        root /usr/share/nginx/html;
+        try_files \$uri =404;
+        break;
+    }
+}
+EOF
+}
+
+function remove_all_standalone_configurations {
+    local old_shopt_options=$(shopt -p) # Backup shopt options
+    shopt -s nullglob
+    for file in "/etc/nginx/conf.d/standalone-cert-"*".conf"; do
+      rm -f "$file"
+    done
+    eval "$old_shopt_options" # Restore shopt options
+}
+
 function remove_all_location_configurations {
     local old_shopt_options=$(shopt -p) # Backup shopt options
     shopt -s nullglob
