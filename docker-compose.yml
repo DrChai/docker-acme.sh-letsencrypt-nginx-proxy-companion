@@ -1,0 +1,26 @@
+version: '3'
+services:
+  acme:
+    container_name: acme
+    build: .
+    environment:
+      - DO_API_KEY=
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+  nginx-proxy:
+    labels:
+        com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    image: jwilder/nginx-proxy
+    container_name: acme-nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs:ro
+
+networks:
+  default:
+    external:
+      name: ${NETWORK:-webproxy}
