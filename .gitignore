@@ -8,3 +8,5 @@ go/
 nginx.tmpl
 test/local_test_env.sh
 test/tests/docker_api/expected-std-out.txt
+
+.DS_Store

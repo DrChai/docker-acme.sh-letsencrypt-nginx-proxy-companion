@@ -3,13 +3,6 @@
 
 set -u
 
-function check_deprecated_env_var {
-    if [[ -n "${ACME_TOS_HASH:-}" ]]; then
-        echo "Info: the ACME_TOS_HASH environment variable is no longer used by simp_le and has been deprecated."
-        echo "simp_le now implicitly agree to the ACME CA ToS."
-    fi
-}
-
 function check_docker_socket {
     if [[ $DOCKER_HOST == unix://* ]]; then
         socket_file=${DOCKER_HOST#unix://}
@@ -115,8 +108,7 @@ function check_default_cert_key {
             -keyout /etc/nginx/certs/default.key.new \
             -out /etc/nginx/certs/default.crt.new \
         && mv /etc/nginx/certs/default.key.new /etc/nginx/certs/default.key \
-        && mv /etc/nginx/certs/default.crt.new /etc/nginx/certs/default.crt \
-        && set_root_ownership_and_permissions /etc/nginx/certs/default.key
+        && mv /etc/nginx/certs/default.crt.new /etc/nginx/certs/default.crt
         echo "Info: a default key and certificate have been created at /etc/nginx/certs/default.key and /etc/nginx/certs/default.crt."
     elif [[ $DEBUG == true && "${default_cert_cn:-}" =~ $cn ]]; then
         echo "Debug: the self generated default certificate is still valid for more than three months. Skipping default certificate creation."
@@ -128,12 +120,6 @@ function check_default_cert_key {
 source /app/functions.sh
 
 if [[ "$*" == "/bin/bash /app/start.sh" ]]; then
-    acmev2_re='https://acme-.*v02\.api\.letsencrypt\.org/directory'
-    if [[ "${ACME_CA_URI:-}" =~ $acmev2_re ]]; then
-        echo "Error: ACME v2 API is not yet supported by simp_le."
-        echo "See https://github.com/zenhack/simp_le/issues/101"
-        exit 1
-    fi
     check_docker_socket
     if [[ -z "$(get_self_cid)" ]]; then
         echo "Error: can't get my container ID !" >&2
@@ -156,12 +142,10 @@ if [[ "$*" == "/bin/bash /app/start.sh" ]]; then
         exit 1
     fi
     check_writable_directory '/etc/nginx/certs'
-    check_writable_directory '/etc/nginx/vhost.d'
-    check_writable_directory '/usr/share/nginx/html'
-    check_deprecated_env_var
     check_default_cert_key
     check_dh_group
     reload_nginx
+    crond
 fi
 
 exec "$@"
