@@ -5,6 +5,7 @@ services:
     build: .
     environment:
       - DO_API_KEY=
+      - NGINX_PROXY_CONTAINER=${NGINX_WEB:-acme-nginx-proxy}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./certs:/etc/nginx/certs

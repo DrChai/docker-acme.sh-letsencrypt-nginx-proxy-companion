@@ -40,7 +40,8 @@ function update_certs {
             staging="--staging"
         fi
 
-        dns="LETSENCRYPT_${cid}_DNS"
+        dns_varname="LETSENCRYPT_${cid}_DNS"
+        dns="${!dns_varname}"
 
         if [[ "$email_address" != "<no value>" ]]; then
             params_d_str+=" --accountemail $email_address"
