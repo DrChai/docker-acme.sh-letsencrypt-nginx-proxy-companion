@@ -40,7 +40,7 @@ function update_certs {
             staging="--staging"
         fi
 
-        dns_dgon="LETSENCRYPT_${cid}_DNS"
+        dns="LETSENCRYPT_${cid}_DNS"
 
         if [[ "$email_address" != "<no value>" ]]; then
             params_d_str+=" --accountemail $email_address"
@@ -51,15 +51,15 @@ function update_certs {
         mkdir -p "$certificate_dir"
         pushd "$certificate_dir" || return
 
-        params_d_str+=" -d $base_domain"
+        # params_d_str+=" -d $base_domain"
         for domain in "${!hosts_array}"; do
             # Add all the domains to certificate
-            params_d_str+="$domain"
+            params_d_str+=" -d $domain"
         done
 
         echo "Creating/renewal $base_domain certificates... (${hosts_array_expanded[*]})"
         $ACME_BIN $staging --issue \
-          --dns dns_dgon \
+          --dns $dns \
           $params_d_str \
           --days 1 \
           --fullchain-file "$certificate_dir/$base_domain.crt" \
