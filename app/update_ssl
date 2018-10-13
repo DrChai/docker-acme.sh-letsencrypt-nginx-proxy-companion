@@ -45,7 +45,7 @@ function update_certs {
         if [[ "$email_address" != "<no value>" ]]; then
             params_d_str+=" --accountemail $email_address"
         fi
-        certificate_dir="/etc/nginx/certs/$base_domain"
+        certificate_dir="/etc/nginx/certs"
 
         # Create directory for the first domain and make it the cwd
         mkdir -p "$certificate_dir"
