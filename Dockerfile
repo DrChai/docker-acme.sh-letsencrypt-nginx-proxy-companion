@@ -14,7 +14,7 @@ RUN apk add --no-cache --virtual .run-deps \
 
 LABEL maintainer="Haolun C. <edwardc@acrossor.com>"
 
-ENV DOCKER_GEN_VERSION 0.7.4
+ENV DOCKER_GEN_VERSION=0.7.4
 ENV AUTO_UPGRADE=1 \
     LE_WORKING_DIR=/acme.sh \
     LE_CONFIG_HOME=/acmecerts
