@@ -2,7 +2,10 @@
 # shellcheck disable=SC2155
 
 set -u
-DEBUG = "${DEBUG:-0}"
+
+DEBUG_LEVEL_DEFAULT=1
+DEBUG = "${DEBUG:-$DEBUG_LEVEL_DEFAULT}"
+
 function check_docker_socket {
     if [[ $DOCKER_HOST == unix://* ]]; then
         socket_file=${DOCKER_HOST#unix://}
@@ -93,7 +96,7 @@ function check_default_cert_key {
         # than 3 months / 7776000 seconds (60 x 60 x 24 x 30 x 3).
         check_cert_min_validity /etc/nginx/certs/default.crt 7776000
         cert_validity=$?
-        [[ $DEBUG -ne 0 ]] && echo "Debug: a default certificate with $default_cert_cn is present."
+        [[ $DEBUG -gt 1 ]] && echo "Debug: a default certificate with $default_cert_cn is present."
     fi
 
     # Create a default cert and private key if:
@@ -110,9 +113,9 @@ function check_default_cert_key {
         && mv /etc/nginx/certs/default.key.new /etc/nginx/certs/default.key \
         && mv /etc/nginx/certs/default.crt.new /etc/nginx/certs/default.crt
         echo "Info: a default key and certificate have been created at /etc/nginx/certs/default.key and /etc/nginx/certs/default.crt."
-    elif [[ $DEBUG -ne 0  && "${default_cert_cn:-}" =~ $cn ]]; then
+    elif [[ $DEBUG -gt 1  && "${default_cert_cn:-}" =~ $cn ]]; then
         echo "Debug: the self generated default certificate is still valid for more than three months. Skipping default certificate creation."
-    elif [[ $DEBUG -ne 0  ]]; then
+    elif [[ $DEBUG -gt 1  ]]; then
         echo "Debug: the default certificate is user provided. Skipping default certificate creation."
     fi
 }
