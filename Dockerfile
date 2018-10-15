@@ -18,8 +18,7 @@ ENV DOCKER_GEN_VERSION=0.7.4
 ENV AUTO_UPGRADE=1 \
     LE_WORKING_DIR=/acme.sh \
     LE_CONFIG_HOME=/acmecerts
-ENV DEBUG=false \
-    DOCKER_HOST=unix:///var/run/docker.sock
+ENV DOCKER_HOST=unix:///var/run/docker.sock
 
 RUN wget --quiet https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
  && tar -C /usr/local/bin -xvzf docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
