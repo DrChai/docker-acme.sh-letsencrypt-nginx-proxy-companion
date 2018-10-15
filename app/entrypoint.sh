@@ -4,7 +4,7 @@
 set -u
 
 DEBUG_LEVEL_DEFAULT=1
-DEBUG="${DEBUG:-$DEBUG_LEVEL_DEFAULT}"
+DEBUG=${DEBUG:-$DEBUG_LEVEL_DEFAULT}
 
 function check_docker_socket {
     if [[ $DOCKER_HOST == unix://* ]]; then

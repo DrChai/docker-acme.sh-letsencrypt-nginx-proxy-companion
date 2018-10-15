@@ -2,7 +2,7 @@ version: '3'
 services:
   acme:
     container_name: acme
-    build: .
+    image: carrycat/acme.sh-letsencrypt-nginx-proxy-companion
     environment:
       - DO_API_KEY=digitaloceankey[optional]
       - GD_Key=godaddykey[optional]
