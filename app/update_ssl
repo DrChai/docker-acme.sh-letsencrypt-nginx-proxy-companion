@@ -63,6 +63,8 @@ function update_certs {
           --dns $dns \
           $params_d_str \
           --days 1 \
+          --cert-file  "$LE_CONFIG_HOME/$base_domain/$base_domain.cer" \
+          --ca-file "$LE_CONFIG_HOME/$base_domain/ca.cer" \
           --fullchain-file "$certificate_dir/$base_domain.crt" \
           --key-file "$certificate_dir/$base_domain.key" \
           --reloadcmd "source /app/functions.sh && reload_nginx"
