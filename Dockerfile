@@ -23,7 +23,7 @@ ENV DOCKER_HOST=unix:///var/run/docker.sock
 RUN wget --quiet https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
  && tar -C /usr/local/bin -xvzf docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
  && rm /docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz
-RUN wget -O- https://get.acme.sh | sh && crontab -l | sed 's#> /dev/null##' | crontab -
+RUN wget -O- https://get.acme.sh | sh && crontab -l |  sed 's#/dev/null#/dev/stdout#' | crontab -
 
 
 COPY /app/ /app/

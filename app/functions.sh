@@ -187,14 +187,21 @@ function reload_nginx {
             # Reloading nginx in case only certificates had been renewed
             echo "Reloading nginx (using separate container ${_nginx_proxy_container})..."
             docker_kill "${_nginx_proxy_container}" SIGHUP
+            return 0
         fi
+        return 1
     else
         if [[ -n "${_nginx_proxy_container:-}" ]]; then
             echo "Reloading nginx proxy (${_nginx_proxy_container})..."
             docker_exec "${_nginx_proxy_container}" \
                 '[ "sh", "-c", "/app/docker-entrypoint.sh /usr/local/bin/docker-gen /app/nginx.tmpl /etc/nginx/conf.d/default.conf; /usr/sbin/nginx -s reload" ]' \
                 | sed -rn 's/^.*([0-9]{4}\/[0-9]{2}\/[0-9]{2}.*$)/\1/p'
-            [[ ${PIPESTATUS[0]} -eq 1 ]] && echo "$(date "+%Y/%m/%d %T"), Error: can't reload nginx-proxy." >&2
+            if [[ ${PIPESTATUS[0]} -eq 1 ]]; then
+                echo "$(date "+%Y/%m/%d %T"), Error: can't reload nginx-proxy." >&2
+                return 1
+            else
+                return 0
+            fi
         fi
     fi
 }

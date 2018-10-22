@@ -36,10 +36,6 @@ function update_certs {
         email_varname="LETSENCRYPT_${cid}_EMAIL"
         email_address="${!email_varname}"
         test_certificate_varname="LETSENCRYPT_${cid}_TEST"
-        if [[ $(lc "${!test_certificate_varname:-}") == true ]]; then
-            staging="--staging"
-        fi
-
         dns_varname="LETSENCRYPT_${cid}_DNS"
         dns="${!dns_varname}"
 
@@ -47,6 +43,13 @@ function update_certs {
             params_d_str+=" --accountemail $email_address"
         fi
         certificate_dir="/etc/nginx/certs"
+        key_file_path="$certificate_dir/$base_domain.key"
+        full_chain_file_path="$certificate_dir/$base_domain.crt"
+        if [[ $(lc "${!test_certificate_varname:-}") == true ]]; then
+            staging="--staging"
+            key_file_path="$certificate_dir/test_$base_domain.key"
+            full_chain_file_path="$certificate_dir/test_$base_domain.crt"
+        fi
 
         # Create directory for the first domain and make it the cwd
         mkdir -p "$certificate_dir"
@@ -62,11 +65,9 @@ function update_certs {
         $ACME_BIN $staging --issue \
           --dns $dns \
           $params_d_str \
-          --days 1 \
-          --cert-file  "$LE_CONFIG_HOME/$base_domain/$base_domain.cer" \
-          --ca-file "$LE_CONFIG_HOME/$base_domain/ca.cer" \
-          --fullchain-file "$certificate_dir/$base_domain.crt" \
-          --key-file "$certificate_dir/$base_domain.key" \
+          --days 5 \
+          --fullchain-file $full_chain_file_path \
+          --key-file $key_file_path \
           --reloadcmd "source /app/functions.sh && reload_nginx"
         popd || return
     done
