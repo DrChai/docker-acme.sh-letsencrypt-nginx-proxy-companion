@@ -11,7 +11,7 @@ DEFAULT_CONF="/etc/nginx/conf.d/default.conf"
 CERTS="/etc/nginx/certs"
 
 function update_certs {
-
+    echo "Performing Update Certs..."
     check_nginx_proxy_container_run || return
 
     [[ -f /app/letsencrypt_service_data ]] || return
