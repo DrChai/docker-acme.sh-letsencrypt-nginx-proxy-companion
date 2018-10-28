@@ -1,5 +1,4 @@
 #!/bin/bash
-# shellcheck disable=SC2155
 
 set -u
 
@@ -148,7 +147,6 @@ if [[ "$*" == "/bin/bash /app/start.sh" ]]; then
     check_default_cert_key
     check_dh_group
     reload_nginx
-    crond
 fi
 
 exec "$@"
