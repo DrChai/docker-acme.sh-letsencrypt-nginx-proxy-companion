@@ -34,5 +34,5 @@ COPY /app/ /app/
 
 WORKDIR /app
 
-ENTRYPOINT [ "/bin/bash", "/app/entrypoint.sh" ]
+ENTRYPOINT ["/app/entrypoint.sh" ]
 CMD ["forego", "start", "-r"]

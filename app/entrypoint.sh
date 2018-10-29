@@ -121,7 +121,7 @@ function check_default_cert_key {
 
 source /app/functions.sh
 
-if [[ "$*" == "/bin/bash /app/start.sh" ]]; then
+if [[ "$*" ==  "forego start -r" ]]; then
     check_docker_socket
     if [[ -z "$(get_self_cid)" ]]; then
         echo "Error: can't get my container ID !" >&2
